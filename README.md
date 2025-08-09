@@ -206,8 +206,7 @@ Built on modern web technologies for performance and security:
 
 ## 👨‍💻 Developer
 
-**Vedanta Banerjee**  
-_Cybersecurity Engineer & Full-Stack Developer_
+**Vedanta Banerjee**
 
 [![GitHub](https://img.shields.io/badge/GitHub-vedanta--banerjee-181717?style=flat&logo=github)](https://github.com/vedantabanerjee) [![LinkedIn](https://img.shields.io/badge/LinkedIn-vedanta--banerjee-0077B5?style=flat&logo=linkedin)](www.linkedin.com/in/vedanta-banerjee)
 
