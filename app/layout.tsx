@@ -4,10 +4,20 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
-}
+  title: "SecureWeb Inspector",
+  keywords: [
+    "web security",
+    "vulnerability scanning",
+    "OWASP Top 10",
+    "SSL analysis",
+    "GDPR compliance",
+    "security reports",
+    "real-time analytics",
+  ],
+  description:
+    "Web security scanning platform that performs real-time vulnerability assessments.",
+  generator: "vedantabanerjee",
+};
 
 export default function RootLayout({
   children,
@@ -17,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="securewebinspector.png" />
         <style>{`
 html {
   font-family: ${GeistSans.style.fontFamily};
@@ -27,5 +38,5 @@ html {
       </head>
       <body>{children}</body>
     </html>
-  )
+  );
 }

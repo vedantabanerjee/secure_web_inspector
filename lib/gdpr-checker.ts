@@ -28,8 +28,7 @@ export interface CookieInfo {
 export class GDPRCookieChecker {
   private timeout: number;
 
-  constructor(timeout = 5) {
-    // Reduced timeout for Vercel
+  constructor(timeout = 10) {
     this.timeout = timeout;
   }
 
@@ -53,21 +52,13 @@ export class GDPRCookieChecker {
     };
 
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(
-        () => controller.abort(),
-        this.timeout * 1000
-      );
-
       const response = await fetch(url, {
-        signal: controller.signal,
+        signal: AbortSignal.timeout(this.timeout * 1000),
         headers: {
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         },
       });
-
-      clearTimeout(timeoutId);
 
       if (!response.ok) {
         result.issues.push(`Failed to access website: HTTP ${response.status}`);

@@ -1,5 +1,5 @@
-import { Shield, Github, Twitter, Linkedin, Mail } from "lucide-react"
-import Link from "next/link"
+import { Shield, Github, Twitter, Linkedin, Mail } from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -15,20 +15,32 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-gray-400 mb-6 max-w-md">
-              Advanced security analysis platform for modern web applications. Built by security professionals, for
-              security professionals.
+              Advanced security analysis platform for modern web applications.
+              Built by security professionals, for security professionals.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-cyan-400 transition-colors"
+              >
                 <Github className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-cyan-400 transition-colors"
+              >
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-cyan-400 transition-colors"
+              >
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-cyan-400 transition-colors"
+              >
                 <Mail className="h-5 w-5" />
               </a>
             </div>
@@ -39,17 +51,26 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <Link
+                  href="/"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors"
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/scan" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <Link
+                  href="/scan"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors"
+                >
                   Security Scan
                 </Link>
               </li>
               <li>
-                <Link href="/vulnerable-login" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <Link
+                  href="/vulnerable-login"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors"
+                >
                   Test Login
                 </Link>
               </li>
@@ -61,22 +82,34 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors"
+                >
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors"
+                >
                   Terms of Service
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors"
+                >
                   Disclaimer
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors"
+                >
                   Contact
                 </a>
               </li>
@@ -85,10 +118,14 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">© 2024 SecureWeb Inspector. All rights reserved.</p>
-          <p className="text-gray-400 text-sm mt-2 md:mt-0">For authorized security testing only.</p>
+          <p className="text-gray-400 text-sm">
+            © 2024 SecureWeb Inspector. All rights reserved.
+          </p>
+          <p className="text-gray-400 text-sm mt-2 md:mt-0">
+            For authorized security testing only.
+          </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

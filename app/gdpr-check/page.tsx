@@ -171,6 +171,12 @@ export default function GDPRCheckPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+      {/* Animated Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse animation-delay-2000"></div>
+      </div>
+
       {/* Header */}
       <header className="relative z-10 border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -422,7 +428,7 @@ export default function GDPRCheckPage() {
                   </Button>
                   <Button
                     variant="outline"
-                    className="w-full border-gray-600 text-gray-300 hover:bg-gray-700 bg-transparent"
+                    className="w-full border-gray-600 text-gray-300 hover:bg-gray-700"
                   >
                     <FileText className="h-4 w-4 mr-2" />
                     Detailed Compliance Report

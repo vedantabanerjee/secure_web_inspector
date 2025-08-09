@@ -62,19 +62,22 @@ export default function ScanPage() {
     setScanError(null);
     setScanResults(null);
 
-    // Shorter phases for faster feedback
     const phases = [
       "Initializing scan...",
-      "Analyzing target...",
-      "Running selected tests...",
-      "Processing results...",
+      "Analyzing target URL...",
+      "Port scanning...",
+      "Service enumeration...",
+      "SSL/TLS analysis...",
+      "HTTP security headers...",
+      "OWASP Top 10 testing...",
+      "GDPR compliance check...",
       "Generating report...",
     ];
 
     let phaseIndex = 0;
     const interval = setInterval(() => {
       setScanProgress((prev) => {
-        const newProgress = prev + 20;
+        const newProgress = prev + 11.1;
         if (phaseIndex < phases.length) {
           setCurrentPhase(phases[phaseIndex]);
           phaseIndex++;
@@ -86,11 +89,10 @@ export default function ScanPage() {
         }
         return newProgress;
       });
-    }, 2000); // Slower progress for better UX
+    }, 1000);
 
     try {
-      // Pass scan options to the server action
-      const result = await scanWebsite(url.trim(), scanOptions);
+      const result = await scanWebsite(url.trim());
 
       clearInterval(interval);
       setIsScanning(false);
@@ -165,6 +167,13 @@ export default function ScanPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+      {/* Animated Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse animation-delay-2000"></div>
+      </div>
+
+      {/* Header */}
       <header className="relative z-10 border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">

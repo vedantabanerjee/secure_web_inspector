@@ -4,15 +4,6 @@ import { GDPRCookieChecker } from "./gdpr-checker";
 // Shodan API integration
 const SHODAN_API_KEY = "NN0RjrCVFKzsBRa1qpd13OkX0bM1YOqg";
 
-export interface ScanOptions {
-  portScan: boolean;
-  vulnScan: boolean;
-  owaspTop10: boolean;
-  gdprCheck: boolean;
-  sslAnalysis: boolean;
-  headerAnalysis: boolean;
-}
-
 export interface ScanResult {
   summary: {
     overallScore: number;
@@ -87,21 +78,17 @@ function extractDomain(url: string): string {
   }
 }
 
-// Optimized port scanning for Vercel (reduced timeout and ports)
-async function scanPorts(
-  domain: string,
-  enabled: boolean
-): Promise<PortInfo[]> {
-  if (!enabled) return [];
-
-  // Reduced port list for faster scanning on Vercel
-  const commonPorts = [80, 443, 8080, 8443];
+// Port scanning function
+async function scanPorts(domain: string): Promise<PortInfo[]> {
+  const commonPorts = [
+    21, 22, 23, 25, 53, 80, 110, 143, 443, 993, 995, 8080, 8443,
+  ];
   const results: PortInfo[] = [];
 
   for (const port of commonPorts) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1500); // Reduced timeout
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
 
       const response = await fetch(`http://${domain}:${port}`, {
         method: "HEAD",
@@ -116,11 +103,38 @@ async function scanPorts(
         const version = "Unknown";
 
         switch (port) {
+          case 21:
+            service = "FTP";
+            break;
+          case 22:
+            service = "SSH";
+            break;
+          case 23:
+            service = "Telnet";
+            break;
+          case 25:
+            service = "SMTP";
+            break;
+          case 53:
+            service = "DNS";
+            break;
           case 80:
             service = "HTTP";
             break;
+          case 110:
+            service = "POP3";
+            break;
+          case 143:
+            service = "IMAP";
+            break;
           case 443:
             service = "HTTPS";
+            break;
+          case 993:
+            service = "IMAPS";
+            break;
+          case 995:
+            service = "POP3S";
             break;
           case 8080:
             service = "HTTP-Alt";
@@ -147,21 +161,10 @@ async function scanPorts(
 
 // HTTP security headers analysis
 async function analyzeSecurityHeaders(
-  url: string,
-  enabled: boolean
+  url: string
 ): Promise<Record<string, string | null>> {
-  if (!enabled) return {};
-
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-    const response = await fetch(url, {
-      method: "HEAD",
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
+    const response = await fetch(url, { method: "HEAD" });
     const headers = response.headers;
 
     return {
@@ -180,22 +183,9 @@ async function analyzeSecurityHeaders(
 }
 
 // SSL/TLS analysis
-async function analyzeSSL(url: string, enabled: boolean): Promise<any> {
-  if (!enabled)
-    return {
-      isSecure: false,
-      protocol: "Unknown",
-      certificate: "Not Analyzed",
-      grade: "N/A",
-    };
-
+async function analyzeSSL(url: string): Promise<any> {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-    const response = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeoutId);
-
+    const response = await fetch(url);
     const isHttps = url.startsWith("https://");
 
     return {
@@ -215,19 +205,9 @@ async function analyzeSSL(url: string, enabled: boolean): Promise<any> {
 }
 
 // Technology detection
-async function detectTechnologies(
-  url: string,
-  enabled: boolean
-): Promise<string[]> {
-  if (!enabled) return [];
-
+async function detectTechnologies(url: string): Promise<string[]> {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-    const response = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeoutId);
-
+    const response = await fetch(url);
     const html = await response.text();
     const headers = response.headers;
 
@@ -239,15 +219,32 @@ async function detectTechnologies(
       technologies.push(`Server: ${server}`);
     }
 
-    // Framework detection (limited for performance)
+    // Framework detection
     if (html.includes("wp-content") || html.includes("wordpress")) {
       technologies.push("WordPress");
+    }
+    if (html.includes("drupal")) {
+      technologies.push("Drupal");
+    }
+    if (html.includes("joomla")) {
+      technologies.push("Joomla");
     }
     if (html.includes("react")) {
       technologies.push("React");
     }
+    if (html.includes("angular")) {
+      technologies.push("Angular");
+    }
+    if (html.includes("vue")) {
+      technologies.push("Vue.js");
+    }
+
+    // JavaScript libraries
     if (html.includes("jquery")) {
       technologies.push("jQuery");
+    }
+    if (html.includes("bootstrap")) {
+      technologies.push("Bootstrap");
     }
 
     return technologies;
@@ -259,104 +256,62 @@ async function detectTechnologies(
 // OWASP Top 10 testing using manual scanner
 async function performOwaspTop10Tests(
   url: string,
-  domain: string,
-  enabled: boolean
+  domain: string
 ): Promise<OwaspResult[]> {
-  if (!enabled) return [];
+  const scanner = new OWASPTop10Scanner();
+  const scanResult = await scanner.scanWebsite(url);
 
-  try {
-    const scanner = new OWASPTop10Scanner(5); // Reduced timeout for Vercel
-    const scanResult = await scanner.scanWebsite(url);
+  // Group vulnerabilities by category
+  const categoryMap = new Map<string, OwaspResult>();
 
-    // Group vulnerabilities by category
-    const categoryMap = new Map<string, OwaspResult>();
-
-    for (const vuln of scanResult.vulnerabilities) {
-      if (!categoryMap.has(vuln.category)) {
-        categoryMap.set(vuln.category, {
-          category: vuln.category,
-          risk: vuln.severity,
-          findings: [],
-          details: vuln.description,
-        });
-      }
-
-      const existing = categoryMap.get(vuln.category)!;
-      existing.findings.push(vuln.evidence);
-
-      // Use highest severity
-      if (
-        vuln.severity === "Critical" ||
-        (vuln.severity === "High" && existing.risk !== "Critical") ||
-        (vuln.severity === "Medium" &&
-          !["Critical", "High"].includes(existing.risk))
-      ) {
-        existing.risk = vuln.severity;
-      }
+  for (const vuln of scanResult.vulnerabilities) {
+    if (!categoryMap.has(vuln.category)) {
+      categoryMap.set(vuln.category, {
+        category: vuln.category,
+        risk: vuln.severity,
+        findings: [],
+        details: vuln.description,
+      });
     }
 
-    return Array.from(categoryMap.values());
-  } catch (error) {
-    console.error("OWASP scanning error:", error);
-    return [];
+    const existing = categoryMap.get(vuln.category)!;
+    existing.findings.push(vuln.evidence);
+
+    // Use highest severity
+    if (
+      vuln.severity === "Critical" ||
+      (vuln.severity === "High" && existing.risk !== "Critical") ||
+      (vuln.severity === "Medium" &&
+        !["Critical", "High"].includes(existing.risk))
+    ) {
+      existing.risk = vuln.severity;
+    }
   }
+
+  return Array.from(categoryMap.values());
 }
 
 // GDPR compliance checking using manual checker
-async function checkGDPRCompliance(
-  url: string,
-  enabled: boolean
-): Promise<GDPRResult> {
-  if (!enabled)
-    return {
-      score: 0,
-      issues: ["GDPR check was disabled"],
-      cookieConsent: false,
-      privacyPolicy: false,
-      dataProcessingTransparency: false,
-      userRights: false,
-    };
+async function checkGDPRCompliance(url: string): Promise<GDPRResult> {
+  const checker = new GDPRCookieChecker();
+  const result = await checker.checkWebsite(url);
 
-  try {
-    const checker = new GDPRCookieChecker(5); // Reduced timeout for Vercel
-    const result = await checker.checkWebsite(url);
-
-    return {
-      score: result.compliance_score,
-      issues: result.issues,
-      cookieConsent: result.has_consent_mechanism,
-      privacyPolicy: result.has_privacy_policy,
-      dataProcessingTransparency: result.has_cookie_policy,
-      userRights: result.has_granular_consent,
-    };
-  } catch (error) {
-    console.error("GDPR checking error:", error);
-    return {
-      score: 0,
-      issues: ["GDPR compliance check failed"],
-      cookieConsent: false,
-      privacyPolicy: false,
-      dataProcessingTransparency: false,
-      userRights: false,
-    };
-  }
+  return {
+    score: result.compliance_score,
+    issues: result.issues,
+    cookieConsent: result.has_consent_mechanism,
+    privacyPolicy: result.has_privacy_policy,
+    dataProcessingTransparency: result.has_cookie_policy,
+    userRights: result.has_granular_consent,
+  };
 }
 
-// Shodan integration for additional intelligence (optional)
+// Shodan integration for additional intelligence
 async function getShodanIntelligence(domain: string): Promise<any> {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-
     const response = await fetch(
-      `https://api.shodan.io/shodan/host/search?key=${SHODAN_API_KEY}&query=${domain}`,
-      {
-        signal: controller.signal,
-      }
+      `https://api.shodan.io/shodan/host/search?key=${SHODAN_API_KEY}&query=${domain}`
     );
-
-    clearTimeout(timeoutId);
-
     if (response.ok) {
       const data = await response.json();
       return data;
@@ -367,11 +322,8 @@ async function getShodanIntelligence(domain: string): Promise<any> {
   return null;
 }
 
-// Main scanning function with conditional execution
-export async function performSecurityScan(
-  url: string,
-  options: ScanOptions
-): Promise<ScanResult> {
+// Main scanning function
+export async function performSecurityScan(url: string): Promise<ScanResult> {
   const domain = extractDomain(url);
   let processedUrl = url;
 
@@ -380,119 +332,89 @@ export async function performSecurityScan(
   }
 
   try {
-    // Perform scans based on selected options - with reduced parallelism for Vercel
-    const scanPromises = [];
-
-    // Basic scans (always needed for scoring)
-    scanPromises.push(
-      analyzeSecurityHeaders(processedUrl, options.headerAnalysis)
-    );
-    scanPromises.push(analyzeSSL(processedUrl, options.sslAnalysis));
-
-    // Optional scans
-    if (options.portScan) {
-      scanPromises.push(scanPorts(domain));
-    } else {
-      scanPromises.push(Promise.resolve([]));
-    }
-
-    if (options.vulnScan) {
-      scanPromises.push(detectTechnologies(processedUrl, true));
-    } else {
-      scanPromises.push(Promise.resolve([]));
-    }
-
-    // Execute basic scans first
-    const [securityHeaders, sslInfo, ports, technologies] = await Promise.all(
-      scanPromises
-    );
-
-    // Execute heavy scans sequentially to avoid timeout
-    let owaspResults: OwaspResult[] = [];
-    let gdprResult: GDPRResult = {
-      score: 0,
-      issues: ["GDPR check was disabled"],
-      cookieConsent: false,
-      privacyPolicy: false,
-      dataProcessingTransparency: false,
-      userRights: false,
-    };
-
-    if (options.owaspTop10) {
-      owaspResults = await performOwaspTop10Tests(processedUrl, domain, true);
-    }
-
-    if (options.gdprCheck) {
-      gdprResult = await checkGDPRCompliance(processedUrl, true);
-    }
+    // Perform all scans in parallel for better performance
+    const [
+      ports,
+      securityHeaders,
+      sslInfo,
+      technologies,
+      owaspResults,
+      gdprResult,
+      shodanData,
+    ] = await Promise.all([
+      scanPorts(domain),
+      analyzeSecurityHeaders(processedUrl),
+      analyzeSSL(processedUrl),
+      detectTechnologies(processedUrl),
+      performOwaspTop10Tests(processedUrl, domain),
+      checkGDPRCompliance(processedUrl),
+      getShodanIntelligence(domain),
+    ]);
 
     // Generate vulnerabilities based on findings (excluding OWASP findings)
     const vulnerabilities: Vulnerability[] = [];
     let vulnId = 1;
 
-    if (options.vulnScan) {
-      // SSL/TLS vulnerabilities
-      if (!sslInfo.isSecure) {
-        vulnerabilities.push({
-          id: vulnId++,
-          title: "Insecure HTTP Protocol",
-          severity: "Critical",
-          category: "Cryptographic Failures",
-          description:
-            "The website is not using HTTPS, transmitting data in plain text.",
-          impact:
-            "All data transmitted can be intercepted and read by attackers",
-          remediation:
-            "Implement SSL/TLS certificate and redirect all HTTP traffic to HTTPS",
-          cwe: "CWE-319",
-        });
-      }
-
-      // Security headers vulnerabilities
-      if (options.headerAnalysis) {
-        if (!securityHeaders["X-Frame-Options"]) {
-          vulnerabilities.push({
-            id: vulnId++,
-            title: "Missing X-Frame-Options Header",
-            severity: "Medium",
-            category: "Security Misconfiguration",
-            description:
-              "The X-Frame-Options header is not set, making the site vulnerable to clickjacking attacks.",
-            impact:
-              "Attackers can embed the site in malicious frames to trick users",
-            remediation: "Set X-Frame-Options header to DENY or SAMEORIGIN",
-            cwe: "CWE-1021",
-          });
-        }
-
-        if (!securityHeaders["Content-Security-Policy"]) {
-          vulnerabilities.push({
-            id: vulnId++,
-            title: "Missing Content Security Policy",
-            severity: "Medium",
-            category: "Injection",
-            description:
-              "No Content Security Policy header found, increasing XSS risk.",
-            impact: "Higher risk of cross-site scripting attacks",
-            remediation: "Implement a strict Content Security Policy",
-            cwe: "CWE-79",
-          });
-        }
-
-        if (!securityHeaders["Strict-Transport-Security"] && sslInfo.isSecure) {
-          vulnerabilities.push({
-            id: vulnId++,
-            title: "Missing HSTS Header",
-            severity: "Medium",
-            category: "Cryptographic Failures",
-            description: "HTTP Strict Transport Security header is missing.",
-            impact: "Users may be vulnerable to protocol downgrade attacks",
-            remediation: "Implement HSTS header with appropriate max-age",
-            cwe: "CWE-319",
-          });
-        }
-      }
+    // SSL/TLS vulnerabilities
+    if (!sslInfo.isSecure) {
+      vulnerabilities.push({
+        id: vulnId++,
+        title: "Insecure HTTP Protocol",
+        severity: "Critical",
+        category: "Cryptographic Failures",
+        description:
+          "The website is not using HTTPS, transmitting data in plain text.",
+        impact: "All data transmitted can be intercepted and read by attackers",
+        remediation:
+          "Implement SSL/TLS certificate and redirect all HTTP traffic to HTTPS",
+        cwe: "CWE-319",
+      });
     }
+
+    // Security headers vulnerabilities
+    if (!securityHeaders["X-Frame-Options"]) {
+      vulnerabilities.push({
+        id: vulnId++,
+        title: "Missing X-Frame-Options Header",
+        severity: "Medium",
+        category: "Security Misconfiguration",
+        description:
+          "The X-Frame-Options header is not set, making the site vulnerable to clickjacking attacks.",
+        impact:
+          "Attackers can embed the site in malicious frames to trick users",
+        remediation: "Set X-Frame-Options header to DENY or SAMEORIGIN",
+        cwe: "CWE-1021",
+      });
+    }
+
+    if (!securityHeaders["Content-Security-Policy"]) {
+      vulnerabilities.push({
+        id: vulnId++,
+        title: "Missing Content Security Policy",
+        severity: "Medium",
+        category: "Injection",
+        description:
+          "No Content Security Policy header found, increasing XSS risk.",
+        impact: "Higher risk of cross-site scripting attacks",
+        remediation: "Implement a strict Content Security Policy",
+        cwe: "CWE-79",
+      });
+    }
+
+    if (!securityHeaders["Strict-Transport-Security"] && sslInfo.isSecure) {
+      vulnerabilities.push({
+        id: vulnId++,
+        title: "Missing HSTS Header",
+        severity: "Medium",
+        category: "Cryptographic Failures",
+        description: "HTTP Strict Transport Security header is missing.",
+        impact: "Users may be vulnerable to protocol downgrade attacks",
+        remediation: "Implement HSTS header with appropriate max-age",
+        cwe: "CWE-319",
+      });
+    }
+
+    // DO NOT add OWASP findings to vulnerabilities array - they have their own section
 
     // Calculate overall score
     const criticalCount = vulnerabilities.filter(
@@ -523,12 +445,12 @@ export async function performSecurityScan(
         infoIssues: 0,
       },
       vulnerabilities,
-      ports: ports as PortInfo[],
+      ports,
       gdpr: gdprResult,
       owaspTop10: owaspResults,
       technicalDetails: {
         serverInfo: securityHeaders["Server"] || "Unknown",
-        technologies: technologies as string[],
+        technologies,
         sslInfo,
         securityHeaders,
         cookies: [], // Would need more complex analysis
