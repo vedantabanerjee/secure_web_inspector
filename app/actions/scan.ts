@@ -2,7 +2,16 @@
 
 import { performSecurityScan } from "@/lib/security-scanner";
 
-export async function scanWebsite(url: string) {
+export interface ScanOptions {
+  portScan: boolean;
+  vulnScan: boolean;
+  owaspTop10: boolean;
+  gdprCheck: boolean;
+  sslAnalysis: boolean;
+  headerAnalysis: boolean;
+}
+
+export async function scanWebsite(url: string, options?: ScanOptions) {
   try {
     // Validate URL format
     const urlPattern =
@@ -12,7 +21,17 @@ export async function scanWebsite(url: string) {
       throw new Error("Invalid URL format. Please enter a valid URL.");
     }
 
-    const results = await performSecurityScan(url.trim());
+    // Set default options if not provided
+    const scanOptions = options || {
+      portScan: true,
+      vulnScan: true,
+      owaspTop10: true,
+      gdprCheck: true,
+      sslAnalysis: true,
+      headerAnalysis: true,
+    };
+
+    const results = await performSecurityScan(url.trim(), scanOptions);
     return { success: true, data: results };
   } catch (error) {
     console.error("Scan error:", error);

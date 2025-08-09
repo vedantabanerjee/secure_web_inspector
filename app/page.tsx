@@ -60,13 +60,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
-        <div className="absolute top-40 left-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-4000"></div>
-      </div>
-
       {/* Header */}
       <header className="relative z-10 border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,23 +76,26 @@ export default function HomePage() {
                   SecureWeb Inspector
                 </h1>
                 <p className="text-gray-400 text-sm">
-                  Advanced Security Analysis Platform
+                  Advanced Security Analysis Platform by Vedanta Banerjee
                 </p>
               </div>
             </div>
             <nav className="flex space-x-6">
-              <Link href="/" className="text-cyan-400 font-medium">
+              <Link
+                href="/"
+                className="text-cyan-400 font-medium transition-all duration-300 hover:scale-110"
+              >
                 Home
               </Link>
               <Link
                 href="/scan"
-                className="text-gray-300 hover:text-cyan-400 transition-colors"
+                className="text-gray-300 hover:text-cyan-400 transition-all duration-300 hover:scale-110"
               >
                 Scan
               </Link>
               <Link
                 href="/vulnerable-login"
-                className="text-gray-300 hover:text-cyan-400 transition-colors"
+                className="text-gray-300 hover:text-cyan-400 transition-all duration-300 hover:scale-110"
               >
                 Test Login
               </Link>
@@ -113,7 +109,9 @@ export default function HomePage() {
         <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center">
             <div className="mb-8">
-              <Badge className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white border-0 px-4 py-2 text-sm font-medium mb-6">
+              <Badge
+                className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white border-0 px-4 py-2 text-sm font-medium mb-6"
+              >
                 <Zap className="h-4 w-4 mr-2" />
                 Next-Gen Security Platform
               </Badge>
@@ -127,40 +125,40 @@ export default function HomePage() {
               <span className="text-white">Your Web Security</span>
             </h1>
 
-            <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
               Unleash the power of advanced vulnerability scanning, real-time
               analytics, and comprehensive security reporting. Built for
               security professionals who demand precision and style.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <Link href="/scan">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white border-0 px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-cyan-500/25"
-                  onMouseEnter={() => setIsAnimating(true)}
-                  onMouseLeave={() => setIsAnimating(false)}
-                >
-                  <Scan
-                    className={`h-5 w-5 mr-2 ${
-                      isAnimating ? "animate-spin" : ""
-                    }`}
-                  />
-                  Start Security Scan
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </Button>
-              </Link>
+              <Button
+                as={Link}
+                href="/scan"
+                size="lg"
+                className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white border-0 px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-cyan-500/25"
+                onMouseEnter={() => setIsAnimating(true)}
+                onMouseLeave={() => setIsAnimating(false)}
+              >
+                <Scan
+                  className={`h-5 w-5 mr-2 ${
+                    isAnimating ? "animate-spin" : ""
+                  }`}
+                />
+                Start Security Scan
+                <ArrowRight className="h-5 w-5 ml-2" />
+              </Button>
 
-              <Link href="/vulnerable-login">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-2 border-red-500 text-red-400 hover:bg-red-500 hover:text-white px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-200 bg-transparent"
-                >
-                  <Bug className="h-5 w-5 mr-2" />
-                  Test Vulnerabilities
-                </Button>
-              </Link>
+              <Button
+                as={Link}
+                href="/vulnerable-login"
+                size="lg"
+                variant="outline"
+                className="border-2 border-red-500 text-red-400 hover:bg-red-500 hover:text-white px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-200 bg-transparent"
+              >
+                <Bug className="h-5 w-5 mr-2" />
+                Test Vulnerabilities
+              </Button>
             </div>
           </div>
         </section>
@@ -222,7 +220,7 @@ export default function HomePage() {
                   reporting.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link href="/scan">
+                  <Link href="/scan" className="inline-block">
                     <Button
                       size="lg"
                       className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white border-0 px-8 py-4"
@@ -231,7 +229,7 @@ export default function HomePage() {
                       Start Your First Scan
                     </Button>
                   </Link>
-                  <Link href="/vulnerable-login">
+                  <Link href="/vulnerable-login" className="inline-block">
                     <Button
                       size="lg"
                       variant="outline"

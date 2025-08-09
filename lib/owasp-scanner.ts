@@ -24,7 +24,8 @@ export class OWASPTop10Scanner {
   private vulnerabilities: OwaspVulnerability[];
   private request_count: number;
 
-  constructor(timeout = 10) {
+  constructor(timeout = 5) {
+    // Reduced default timeout for Vercel
     this.timeout = timeout;
     this.vulnerabilities = [];
     this.request_count = 0;
@@ -75,13 +76,14 @@ export class OWASPTop10Scanner {
     this.request_count = 0;
 
     try {
-      // A01: Broken Access Control
+      // Reduced test scope for Vercel performance
+      // A01: Broken Access Control (limited tests)
       await this.testBrokenAccessControl(url);
 
       // A02: Cryptographic Failures
       await this.testCryptographicFailures(url);
 
-      // A03: Injection
+      // A03: Injection (basic tests only)
       await this.testInjectionVulnerabilities(url);
 
       // A04: Insecure Design
@@ -90,20 +92,7 @@ export class OWASPTop10Scanner {
       // A05: Security Misconfiguration
       await this.testSecurityMisconfiguration(url);
 
-      // A06: Vulnerable and Outdated Components
-      await this.testVulnerableComponents(url);
-
-      // A07: Identification and Authentication Failures
-      await this.testAuthenticationFailures(url);
-
-      // A08: Software and Data Integrity Failures
-      await this.testIntegrityFailures(url);
-
-      // A09: Security Logging and Monitoring Failures
-      await this.testLoggingFailures(url);
-
-      // A10: Server-Side Request Forgery (SSRF)
-      await this.testSSRFVulnerabilities(url);
+      // Skip heavy tests for Vercel (A06-A10) to avoid timeout
     } catch (error) {
       console.error("OWASP scanning error:", error);
     }
@@ -119,14 +108,8 @@ export class OWASPTop10Scanner {
 
   private async testBrokenAccessControl(url: string): Promise<void> {
     const baseUrl = url.replace(/\/$/, "");
-    const adminPaths = [
-      "/admin",
-      "/administrator",
-      "/admin.php",
-      "/wp-admin",
-      "/.env",
-      "/.git/config",
-    ];
+    // Reduced path list for faster scanning
+    const adminPaths = ["/admin", "/.env", "/.git/config"];
 
     for (const path of adminPaths) {
       const testUrl = baseUrl + path;
@@ -149,34 +132,6 @@ export class OWASPTop10Scanner {
             recommendation:
               "Implement proper access controls and authentication",
             cwe_id: "CWE-284",
-          });
-        }
-      }
-    }
-
-    // Test for directory traversal
-    const traversalPayloads = [
-      "../../../../etc/passwd",
-      "..\\..\\..\\..\\windows\\system32\\drivers\\etc\\hosts",
-    ];
-
-    for (const payload of traversalPayloads) {
-      const testUrl = `${baseUrl}/${payload}`;
-      const response = await this.makeRequest(testUrl);
-
-      if (response && response.status === 200) {
-        const text = await response.text();
-        if (text.includes("root:") || text.includes("daemon:")) {
-          this.vulnerabilities.push({
-            id: `A01-${Date.now()}`,
-            category: "A01:2021 – Broken Access Control",
-            severity: "Critical",
-            title: "Directory Traversal Vulnerability",
-            description: "Directory traversal attack successful",
-            evidence: `Payload: ${payload} returned system files`,
-            recommendation:
-              "Implement proper input validation and file access controls",
-            cwe_id: "CWE-22",
           });
         }
       }
@@ -276,50 +231,6 @@ export class OWASPTop10Scanner {
         cwe_id: "CWE-79",
       });
     }
-
-    // Test basic SQL injection on URL parameters
-    const urlObj = new URL(url);
-    if (urlObj.search) {
-      const testUrl = url + (url.includes("?") ? "&" : "?") + "test='";
-      const testResponse = await this.makeRequest(testUrl);
-
-      if (testResponse) {
-        const testHtml = await testResponse.text();
-        if (this.detectSQLError(testHtml)) {
-          this.vulnerabilities.push({
-            id: `A03-${Date.now()}`,
-            category: "A03:2021 – Injection",
-            severity: "Critical",
-            title: "SQL Injection Vulnerability",
-            description: "SQL injection detected in URL parameters",
-            evidence: "SQL error triggered by injection payload",
-            recommendation: "Use parameterized queries and input validation",
-            cwe_id: "CWE-89",
-          });
-        }
-      }
-    }
-  }
-
-  private detectSQLError(responseText: string): boolean {
-    const sqlErrors = [
-      "sql syntax",
-      "mysql_fetch",
-      "ora-01756",
-      "microsoft ole db",
-      "odbc sql server driver",
-      "sqlite_master",
-      "pg_admin",
-      "postgresql",
-      "warning: mysql",
-      "valid mysql result",
-      "mysqlclient",
-      "division by zero",
-    ];
-
-    return sqlErrors.some((error) =>
-      responseText.toLowerCase().includes(error)
-    );
   }
 
   private async testInsecureDesign(url: string): Promise<void> {
@@ -408,216 +319,6 @@ export class OWASPTop10Scanner {
             "Implement custom error pages without sensitive information",
           cwe_id: "CWE-209",
         });
-      }
-    }
-  }
-
-  private async testVulnerableComponents(url: string): Promise<void> {
-    const baseUrl = url.replace(/\/$/, "");
-    const vulnerablePaths = [
-      "/phpinfo.php",
-      "/info.php",
-      "/test.php",
-      "/phpMyAdmin/",
-      "/wp-admin/",
-      "/administrator/",
-      "/admin/",
-      "/elmah.axd",
-    ];
-
-    for (const path of vulnerablePaths) {
-      const testUrl = baseUrl + path;
-      const response = await this.makeRequest(testUrl);
-
-      if (response && response.status === 200) {
-        this.vulnerabilities.push({
-          id: `A06-${Date.now()}`,
-          category: "A06:2021 – Vulnerable and Outdated Components",
-          severity: "Medium",
-          title: "Potentially Vulnerable Component Detected",
-          description: `Accessible component found at ${testUrl}`,
-          evidence: `HTTP 200 response from ${path}`,
-          recommendation: "Review and update/remove unnecessary components",
-          cwe_id: "CWE-1104",
-        });
-      }
-    }
-
-    // Check for outdated JavaScript libraries
-    const response = await this.makeRequest(url);
-    if (response) {
-      const html = await response.text();
-      if (html.includes("jquery-1.") || html.includes("jquery/1.")) {
-        this.vulnerabilities.push({
-          id: `A06-${Date.now()}`,
-          category: "A06:2021 – Vulnerable and Outdated Components",
-          severity: "Medium",
-          title: "Outdated JavaScript Library",
-          description: "Potentially outdated jQuery version detected",
-          evidence: "Old jQuery version found in HTML",
-          recommendation: "Update to latest jQuery version",
-          cwe_id: "CWE-1104",
-        });
-      }
-    }
-  }
-
-  private async testAuthenticationFailures(url: string): Promise<void> {
-    const response = await this.makeRequest(url);
-    if (!response) return;
-
-    const html = await response.text();
-
-    // Check for login over HTTP
-    if (html.toLowerCase().includes("login") && url.startsWith("http://")) {
-      this.vulnerabilities.push({
-        id: `A07-${Date.now()}`,
-        category: "A07:2021 – Identification and Authentication Failures",
-        severity: "High",
-        title: "Login Functionality Over Insecure HTTP",
-        description: "Login functionality detected over unencrypted HTTP",
-        evidence: "Login form found on HTTP page",
-        recommendation: "Implement HTTPS for all authentication pages",
-        cwe_id: "CWE-319",
-      });
-    }
-
-    // Check for weak password policies
-    if (html.toLowerCase().includes('type="password"')) {
-      const passwordRequirements = [
-        "minimum",
-        "uppercase",
-        "lowercase",
-        "special character",
-        "digit",
-        "length",
-      ];
-
-      if (
-        !passwordRequirements.some((req) => html.toLowerCase().includes(req))
-      ) {
-        this.vulnerabilities.push({
-          id: `A07-${Date.now()}`,
-          category: "A07:2021 – Identification and Authentication Failures",
-          severity: "Medium",
-          title: "Weak Password Policy",
-          description: "No visible password complexity requirements",
-          evidence: "Password form lacks complexity requirements",
-          recommendation: "Implement strong password policy",
-          cwe_id: "CWE-521",
-        });
-      }
-    }
-  }
-
-  private async testIntegrityFailures(url: string): Promise<void> {
-    const response = await this.makeRequest(url);
-    if (!response) return;
-
-    const html = await response.text();
-
-    // Check for external resources without integrity checks
-    const scriptMatches =
-      html.match(/<script[^>]+src=["']https?:\/\/[^"']+["'][^>]*>/gi) || [];
-    const linkMatches =
-      html.match(/<link[^>]+href=["']https?:\/\/[^"']+["'][^>]*>/gi) || [];
-
-    const externalResourcesWithoutSRI = [];
-
-    for (const script of scriptMatches) {
-      if (!script.includes("integrity=")) {
-        externalResourcesWithoutSRI.push("script");
-      }
-    }
-
-    for (const link of linkMatches) {
-      if (!link.includes("integrity=")) {
-        externalResourcesWithoutSRI.push("stylesheet");
-      }
-    }
-
-    if (externalResourcesWithoutSRI.length > 0) {
-      this.vulnerabilities.push({
-        id: `A08-${Date.now()}`,
-        category: "A08:2021 – Software and Data Integrity Failures",
-        severity: "Medium",
-        title: "Missing Subresource Integrity",
-        description: "External resources loaded without integrity verification",
-        evidence: `${externalResourcesWithoutSRI.length} external resources without SRI`,
-        recommendation:
-          "Implement Subresource Integrity (SRI) for external resources",
-        cwe_id: "CWE-345",
-      });
-    }
-  }
-
-  private async testLoggingFailures(url: string): Promise<void> {
-    // Test for lack of rate limiting
-    const responses = [];
-    for (let i = 0; i < 5; i++) {
-      const response = await this.makeRequest(url);
-      if (response) {
-        responses.push(response.status);
-      }
-    }
-
-    if (responses.length === 5 && responses.every((status) => status === 200)) {
-      this.vulnerabilities.push({
-        id: `A09-${Date.now()}`,
-        category: "A09:2021 – Security Logging and Monitoring Failures",
-        severity: "Low",
-        title: "Potential Lack of Rate Limiting",
-        description:
-          "Multiple rapid requests all succeeded without rate limiting",
-        evidence: "5 consecutive requests all returned HTTP 200",
-        recommendation: "Implement rate limiting and request monitoring",
-        cwe_id: "CWE-770",
-      });
-    }
-  }
-
-  private async testSSRFVulnerabilities(url: string): Promise<void> {
-    const urlObj = new URL(url);
-    if (!urlObj.search) return;
-
-    const params = new URLSearchParams(urlObj.search);
-    const ssrfPayloads = [
-      "http://169.254.169.254/",
-      "http://127.0.0.1/",
-      "http://localhost/",
-    ];
-
-    for (const [paramName] of params) {
-      for (const payload of ssrfPayloads.slice(0, 2)) {
-        const testParams = new URLSearchParams(params);
-        testParams.set(paramName, payload);
-
-        const testUrl = `${urlObj.origin}${
-          urlObj.pathname
-        }?${testParams.toString()}`;
-        const response = await this.makeRequest(testUrl);
-
-        if (response && response.status === 200) {
-          const text = await response.text();
-          if (
-            text.includes("root:") ||
-            text.includes("daemon:") ||
-            text.length > 1000
-          ) {
-            this.vulnerabilities.push({
-              id: `A10-${Date.now()}`,
-              category: "A10:2021 – Server-Side Request Forgery (SSRF)",
-              severity: "High",
-              title: "Potential SSRF Vulnerability",
-              description: `SSRF vulnerability detected in parameter '${paramName}'`,
-              evidence: `Payload: ${payload} returned suspicious response`,
-              recommendation:
-                "Implement URL validation and whitelist allowed hosts",
-              cwe_id: "CWE-918",
-            });
-            break;
-          }
-        }
       }
     }
   }

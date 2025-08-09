@@ -1,9 +1,6 @@
-import type { ScanResult } from "./security-scanner";
+import type { ScanResult } from "./security-scanner"
 
-export function generatePDFContent(
-  scanResult: ScanResult,
-  targetUrl: string
-): string {
+export function generatePDFContent(scanResult: ScanResult, targetUrl: string): string {
   // Generate clean HTML content optimized for PDF conversion
   const htmlContent = `
 <!DOCTYPE html>
@@ -63,13 +60,7 @@ export function generatePDFContent(
         .overall-score {
             font-size: 48px;
             font-weight: bold;
-            color: ${
-              scanResult.summary.overallScore >= 80
-                ? "#10b981"
-                : scanResult.summary.overallScore >= 60
-                ? "#f59e0b"
-                : "#ef4444"
-            };
+            color: ${scanResult.summary.overallScore >= 80 ? "#10b981" : scanResult.summary.overallScore >= 60 ? "#f59e0b" : "#ef4444"};
             margin: 10px 0;
         }
         
@@ -210,13 +201,7 @@ export function generatePDFContent(
         .gdpr-score {
             font-size: 32px;
             font-weight: bold;
-            color: ${
-              scanResult.gdpr.score >= 80
-                ? "#10b981"
-                : scanResult.gdpr.score >= 60
-                ? "#f59e0b"
-                : "#ef4444"
-            };
+            color: ${scanResult.gdpr.score >= 80 ? "#10b981" : scanResult.gdpr.score >= 60 ? "#f59e0b" : "#ef4444"};
             text-align: center;
             margin: 20px 0;
         }
@@ -270,33 +255,23 @@ export function generatePDFContent(
         <h2 class="section-title">Executive Summary</h2>
         <div class="summary-grid">
             <div class="summary-item">
-                <div class="summary-count critical">${
-                  scanResult.summary.criticalIssues
-                }</div>
+                <div class="summary-count critical">${scanResult.summary.criticalIssues}</div>
                 <div>Critical</div>
             </div>
             <div class="summary-item">
-                <div class="summary-count high">${
-                  scanResult.summary.highIssues
-                }</div>
+                <div class="summary-count high">${scanResult.summary.highIssues}</div>
                 <div>High</div>
             </div>
             <div class="summary-item">
-                <div class="summary-count medium">${
-                  scanResult.summary.mediumIssues
-                }</div>
+                <div class="summary-count medium">${scanResult.summary.mediumIssues}</div>
                 <div>Medium</div>
             </div>
             <div class="summary-item">
-                <div class="summary-count low">${
-                  scanResult.summary.lowIssues
-                }</div>
+                <div class="summary-count low">${scanResult.summary.lowIssues}</div>
                 <div>Low</div>
             </div>
             <div class="summary-item">
-                <div class="summary-count info">${
-                  scanResult.summary.infoIssues
-                }</div>
+                <div class="summary-count info">${scanResult.summary.infoIssues}</div>
                 <div>Info</div>
             </div>
         </div>
@@ -313,9 +288,7 @@ export function generatePDFContent(
             <div class="vulnerability ${vuln.severity.toLowerCase()}">
                 <div class="vuln-header">
                     <h3 class="vuln-title">${vuln.title}</h3>
-                    <span class="severity-badge severity-${vuln.severity.toLowerCase()}">${
-                    vuln.severity
-                  }</span>
+                    <span class="severity-badge severity-${vuln.severity.toLowerCase()}">${vuln.severity}</span>
                 </div>
                 <div class="vuln-detail">
                     <span class="vuln-label">Category:</span>
@@ -344,7 +317,7 @@ export function generatePDFContent(
                     : ""
                 }
             </div>
-        `
+        `,
                 )
                 .join("")
         }
@@ -358,9 +331,7 @@ export function generatePDFContent(
             <div class="vulnerability ${owasp.risk.toLowerCase()}">
                 <div class="vuln-header">
                     <h3 class="vuln-title">${owasp.category}</h3>
-                    <span class="severity-badge severity-${owasp.risk.toLowerCase()}">${
-              owasp.risk
-            }</span>
+                    <span class="severity-badge severity-${owasp.risk.toLowerCase()}">${owasp.risk}</span>
                 </div>
                 <div class="vuln-detail">
                     <span class="vuln-label">Description:</span>
@@ -377,7 +348,7 @@ export function generatePDFContent(
                     : ""
                 }
             </div>
-        `
+        `,
           )
           .join("")}
     </div>
@@ -401,11 +372,9 @@ export function generatePDFContent(
                         <td>${port.port}</td>
                         <td>${port.service}</td>
                         <td>${port.version}</td>
-                        <td class="status-${port.status.toLowerCase()}">${
-                      port.status
-                    }</td>
+                        <td class="status-${port.status.toLowerCase()}">${port.status}</td>
                     </tr>
-                `
+                `,
                   )
                   .join("")}
             </tbody>
@@ -418,30 +387,16 @@ export function generatePDFContent(
             <div class="gdpr-score">${scanResult.gdpr.score}% Compliant</div>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
                 <div>
-                    <strong>Cookie Consent:</strong> ${
-                      scanResult.gdpr.cookieConsent
-                        ? "✅ Found"
-                        : "❌ Not Found"
-                    }
+                    <strong>Cookie Consent:</strong> ${scanResult.gdpr.cookieConsent ? "✅ Found" : "❌ Not Found"}
                 </div>
                 <div>
-                    <strong>Privacy Policy:</strong> ${
-                      scanResult.gdpr.privacyPolicy
-                        ? "✅ Found"
-                        : "❌ Not Found"
-                    }
+                    <strong>Privacy Policy:</strong> ${scanResult.gdpr.privacyPolicy ? "✅ Found" : "❌ Not Found"}
                 </div>
                 <div>
-                    <strong>Data Processing:</strong> ${
-                      scanResult.gdpr.dataProcessingTransparency
-                        ? "✅ Found"
-                        : "❌ Not Found"
-                    }
+                    <strong>Data Processing:</strong> ${scanResult.gdpr.dataProcessingTransparency ? "✅ Found" : "❌ Not Found"}
                 </div>
                 <div>
-                    <strong>User Rights:</strong> ${
-                      scanResult.gdpr.userRights ? "✅ Found" : "❌ Not Found"
-                    }
+                    <strong>User Rights:</strong> ${scanResult.gdpr.userRights ? "✅ Found" : "❌ Not Found"}
                 </div>
             </div>
             ${
@@ -450,12 +405,7 @@ export function generatePDFContent(
                 <div style="margin-top: 20px;">
                     <strong>Issues Found:</strong>
                     <ul style="margin: 10px 0; padding-left: 20px;">
-                        ${scanResult.gdpr.issues
-                          .map(
-                            (issue) =>
-                              `<li style="margin: 5px 0;">${issue}</li>`
-                          )
-                          .join("")}
+                        ${scanResult.gdpr.issues.map((issue) => `<li style="margin: 5px 0;">${issue}</li>`).join("")}
                     </ul>
                 </div>
             `
@@ -469,22 +419,15 @@ export function generatePDFContent(
         <div style="margin: 20px 0;">
             <div class="vuln-detail">
                 <span class="vuln-label">Server:</span>
-                <span class="vuln-text">${
-                  scanResult.technicalDetails.serverInfo
-                }</span>
+                <span class="vuln-text">${scanResult.technicalDetails.serverInfo}</span>
             </div>
             <div class="vuln-detail">
                 <span class="vuln-label">Technologies:</span>
-                <span class="vuln-text">${
-                  scanResult.technicalDetails.technologies.join(", ") ||
-                  "None detected"
-                }</span>
+                <span class="vuln-text">${scanResult.technicalDetails.technologies.join(", ") || "None detected"}</span>
             </div>
             <div class="vuln-detail">
                 <span class="vuln-label">SSL/TLS:</span>
-                <span class="vuln-text">${
-                  scanResult.technicalDetails.sslInfo.protocol
-                } (Grade: ${scanResult.technicalDetails.sslInfo.grade})</span>
+                <span class="vuln-text">${scanResult.technicalDetails.sslInfo.protocol} (Grade: ${scanResult.technicalDetails.sslInfo.grade})</span>
             </div>
         </div>
         
@@ -504,11 +447,9 @@ export function generatePDFContent(
                     <tr>
                         <td>${header}</td>
                         <td>${value || "Not Set"}</td>
-                        <td style="color: ${value ? "#10b981" : "#ef4444"};">${
-                      value ? "✅ Present" : "❌ Missing"
-                    }</td>
+                        <td style="color: ${value ? "#10b981" : "#ef4444"};">${value ? "✅ Present" : "❌ Missing"}</td>
                     </tr>
-                `
+                `,
                   )
                   .join("")}
             </tbody>
@@ -519,33 +460,11 @@ export function generatePDFContent(
         <h2 class="section-title">Recommendations</h2>
         <div class="recommendations">
             <ol>
-                ${
-                  scanResult.summary.criticalIssues > 0
-                    ? "<li><strong>Critical Priority:</strong> Address all critical vulnerabilities immediately as they pose severe security risks.</li>"
-                    : ""
-                }
-                ${
-                  scanResult.summary.highIssues > 0
-                    ? "<li><strong>High Priority:</strong> Resolve high-severity issues within 30 days.</li>"
-                    : ""
-                }
-                ${
-                  !scanResult.technicalDetails.sslInfo.isSecure
-                    ? "<li><strong>Implement HTTPS:</strong> Migrate to HTTPS to protect data in transit.</li>"
-                    : ""
-                }
-                ${
-                  !scanResult.technicalDetails.securityHeaders[
-                    "Content-Security-Policy"
-                  ]
-                    ? "<li><strong>Implement CSP:</strong> Add Content Security Policy to prevent XSS attacks.</li>"
-                    : ""
-                }
-                ${
-                  scanResult.gdpr.score < 80
-                    ? "<li><strong>GDPR Compliance:</strong> Improve GDPR compliance to meet regulatory requirements.</li>"
-                    : ""
-                }
+                ${scanResult.summary.criticalIssues > 0 ? "<li><strong>Critical Priority:</strong> Address all critical vulnerabilities immediately as they pose severe security risks.</li>" : ""}
+                ${scanResult.summary.highIssues > 0 ? "<li><strong>High Priority:</strong> Resolve high-severity issues within 30 days.</li>" : ""}
+                ${!scanResult.technicalDetails.sslInfo.isSecure ? "<li><strong>Implement HTTPS:</strong> Migrate to HTTPS to protect data in transit.</li>" : ""}
+                ${!scanResult.technicalDetails.securityHeaders["Content-Security-Policy"] ? "<li><strong>Implement CSP:</strong> Add Content Security Policy to prevent XSS attacks.</li>" : ""}
+                ${scanResult.gdpr.score < 80 ? "<li><strong>GDPR Compliance:</strong> Improve GDPR compliance to meet regulatory requirements.</li>" : ""}
                 <li><strong>Regular Scanning:</strong> Perform security assessments regularly to maintain security posture.</li>
                 <li><strong>Security Training:</strong> Ensure development team is trained on secure coding practices.</li>
                 <li><strong>Incident Response:</strong> Develop and test incident response procedures.</li>
@@ -562,7 +481,7 @@ export function generatePDFContent(
     </div>
 </body>
 </html>
-  `;
+  `
 
-  return htmlContent;
+  return htmlContent
 }
