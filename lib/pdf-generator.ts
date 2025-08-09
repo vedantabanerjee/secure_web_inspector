@@ -477,7 +477,7 @@ export function generatePDFContent(scanResult: ScanResult, targetUrl: string): s
         <p><strong>SecureWeb Inspector Security Assessment Report</strong></p>
         <p>Generated on ${new Date().toLocaleString()}</p>
         <p>This report was generated for authorized security testing purposes only.</p>
-        <p>For questions or support, contact your security team.</p>
+        <p> © 2025 SecureWeb Inspector. All rights reserved by Vedanta Banerjee.</p>
     </div>
 </body>
 </html>

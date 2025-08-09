@@ -14,34 +14,26 @@ export default function Footer() {
                 SecureWeb Inspector
               </span>
             </div>
-            <p className="text-gray-400 mb-6 max-w-md">
-              Advanced security analysis platform for modern web applications.
-              Built by security professionals, for security professionals.
-            </p>
+            <p className="text-gray-400 max-w-md">Developer: Vedanta Banerjee</p>
+            <p className="text-gray-400 mb-6 max-w-md">Version: 0.0.7</p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://github.com/vedantabanerjee/secure_web_inspector"
                 className="text-gray-400 hover:text-cyan-400 transition-colors"
               >
                 <Github className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="https://x.com/0xr1sh1"
                 className="text-gray-400 hover:text-cyan-400 transition-colors"
               >
                 <Twitter className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/in/vedanta-banerjee"
                 className="text-gray-400 hover:text-cyan-400 transition-colors"
               >
                 <Linkedin className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-cyan-400 transition-colors"
-              >
-                <Mail className="h-5 w-5" />
               </a>
             </div>
           </div>
@@ -76,50 +68,11 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
-          {/* Legal */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Legal</h3>
-            <ul className="space-y-2">
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors"
-                >
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors"
-                >
-                  Terms of Service
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors"
-                >
-                  Disclaimer
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors"
-                >
-                  Contact
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2024 SecureWeb Inspector. All rights reserved.
+            © 2025 SecureWeb Inspector. All rights reserved by Vedanta Banerjee.
           </p>
           <p className="text-gray-400 text-sm mt-2 md:mt-0">
             For authorized security testing only.

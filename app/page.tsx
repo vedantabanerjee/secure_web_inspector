@@ -108,16 +108,14 @@ export default function HomePage() {
         {/* Hero Section */}
         <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center">
-            <div className="mb-8">
-              <Badge
-                className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white border-0 px-4 py-2 text-sm font-medium mb-6"
-              >
+            <div className="mb-8 mt-8">
+              <Badge className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white border-0 px-4 py-2 text-sm font-medium mb-6">
                 <Zap className="h-4 w-4 mr-2" />
                 Next-Gen Security Platform
               </Badge>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 mt-12">
               <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Hack-Proof
               </span>
@@ -131,9 +129,8 @@ export default function HomePage() {
               security professionals who demand precision and style.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            {/* <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Button
-                as={Link}
                 href="/scan"
                 size="lg"
                 className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white border-0 px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-cyan-500/25"
@@ -159,7 +156,7 @@ export default function HomePage() {
                 <Bug className="h-5 w-5 mr-2" />
                 Test Vulnerabilities
               </Button>
-            </div>
+            </div> */}
           </div>
         </section>
 
