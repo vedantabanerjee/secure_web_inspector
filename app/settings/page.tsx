@@ -1,60 +1,74 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { SettingsIcon, ArrowLeft, Shield, Bell, Database, Key, Globe, Save, AlertTriangle, Info } from 'lucide-react'
-import Link from 'next/link'
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  SettingsIcon,
+  ArrowLeft,
+  Shield,
+  Bell,
+  Database,
+  Globe,
+  Save,
+  AlertTriangle,
+  Info,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
     // General Settings
-    organizationName: 'SecureWeb Inspector',
-    defaultScanTimeout: '300',
-    maxConcurrentScans: '5',
-    
+    organizationName: "SecureWeb Inspector",
+    defaultScanTimeout: "300",
+    maxConcurrentScans: "5",
+
     // Security Settings
     enableRateLimiting: true,
-    maxRequestsPerMinute: '100',
+    maxRequestsPerMinute: "100",
     enableLogging: true,
-    logRetentionDays: '90',
-    
+    logRetentionDays: "90",
+
     // Notification Settings
     emailNotifications: true,
     slackNotifications: false,
-    webhookUrl: '',
-    notificationEmail: 'admin@company.com',
-    
+    webhookUrl: "",
+    notificationEmail: "admin@company.com",
+
     // Scanning Settings
-    defaultPortRange: '1-1000',
+    defaultPortRange: "1-1000",
     enableSSLVerification: true,
-    userAgent: 'SecureWeb Inspector v1.0',
-    requestTimeout: '30',
-    
+    userAgent: "SecureWeb Inspector v1.0",
+    requestTimeout: "30",
+
     // Integration Settings
-    owaspZapApiKey: '',
-    burpSuiteApiUrl: '',
+    owaspZapApiKey: "",
+    burpSuiteApiUrl: "",
     jiraIntegration: false,
-    jiraUrl: '',
-    jiraApiKey: ''
-  })
+    jiraUrl: "",
+    jiraApiKey: "",
+  });
 
   const handleSettingChange = (key: string, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }))
-  }
+    setSettings((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleSave = () => {
     // Simulate saving settings
-    console.log('Saving settings:', settings)
+    console.log("Saving settings:", settings);
     // In a real app, this would make an API call
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,29 +119,43 @@ export default function SettingsPage() {
                     <Input
                       id="org-name"
                       value={settings.organizationName}
-                      onChange={(e) => handleSettingChange('organizationName', e.target.value)}
+                      onChange={(e) =>
+                        handleSettingChange("organizationName", e.target.value)
+                      }
                       className="mt-1"
                     />
                   </div>
-                  
+
                   <div>
-                    <Label htmlFor="scan-timeout">Default Scan Timeout (seconds)</Label>
+                    <Label htmlFor="scan-timeout">
+                      Default Scan Timeout (seconds)
+                    </Label>
                     <Input
                       id="scan-timeout"
                       type="number"
                       value={settings.defaultScanTimeout}
-                      onChange={(e) => handleSettingChange('defaultScanTimeout', e.target.value)}
+                      onChange={(e) =>
+                        handleSettingChange(
+                          "defaultScanTimeout",
+                          e.target.value
+                        )
+                      }
                       className="mt-1"
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="max-scans">Max Concurrent Scans</Label>
                     <Input
                       id="max-scans"
                       type="number"
                       value={settings.maxConcurrentScans}
-                      onChange={(e) => handleSettingChange('maxConcurrentScans', e.target.value)}
+                      onChange={(e) =>
+                        handleSettingChange(
+                          "maxConcurrentScans",
+                          e.target.value
+                        )
+                      }
                       className="mt-1"
                     />
                   </div>
@@ -151,58 +179,78 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="rate-limiting">Enable Rate Limiting</Label>
-                    <p className="text-sm text-gray-600">Protect against abuse and DoS attacks</p>
+                    <p className="text-sm text-gray-600">
+                      Protect against abuse and DoS attacks
+                    </p>
                   </div>
                   <Switch
                     id="rate-limiting"
                     checked={settings.enableRateLimiting}
-                    onCheckedChange={(checked) => handleSettingChange('enableRateLimiting', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("enableRateLimiting", checked)
+                    }
                   />
                 </div>
-                
+
                 {settings.enableRateLimiting && (
                   <div>
-                    <Label htmlFor="max-requests">Max Requests Per Minute</Label>
+                    <Label htmlFor="max-requests">
+                      Max Requests Per Minute
+                    </Label>
                     <Input
                       id="max-requests"
                       type="number"
                       value={settings.maxRequestsPerMinute}
-                      onChange={(e) => handleSettingChange('maxRequestsPerMinute', e.target.value)}
+                      onChange={(e) =>
+                        handleSettingChange(
+                          "maxRequestsPerMinute",
+                          e.target.value
+                        )
+                      }
                       className="mt-1"
                     />
                   </div>
                 )}
-                
+
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="logging">Enable Security Logging</Label>
-                    <p className="text-sm text-gray-600">Log all security-related events</p>
+                    <p className="text-sm text-gray-600">
+                      Log all security-related events
+                    </p>
                   </div>
                   <Switch
                     id="logging"
                     checked={settings.enableLogging}
-                    onCheckedChange={(checked) => handleSettingChange('enableLogging', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("enableLogging", checked)
+                    }
                   />
                 </div>
-                
+
                 {settings.enableLogging && (
                   <div>
-                    <Label htmlFor="log-retention">Log Retention Period (days)</Label>
+                    <Label htmlFor="log-retention">
+                      Log Retention Period (days)
+                    </Label>
                     <Input
                       id="log-retention"
                       type="number"
                       value={settings.logRetentionDays}
-                      onChange={(e) => handleSettingChange('logRetentionDays', e.target.value)}
+                      onChange={(e) =>
+                        handleSettingChange("logRetentionDays", e.target.value)
+                      }
                       className="mt-1"
                     />
                   </div>
                 )}
-                
+
                 <Alert>
                   <AlertTriangle className="h-4 w-4" />
                   <AlertDescription>
-                    Security settings changes will take effect immediately. Ensure you understand 
-                    the implications before modifying these settings.
+                    Security settings changes will take effect immediately.
+                    Ensure you understand the implications before modifying
+                    these settings.
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -227,43 +275,57 @@ export default function SettingsPage() {
                     <Input
                       id="port-range"
                       value={settings.defaultPortRange}
-                      onChange={(e) => handleSettingChange('defaultPortRange', e.target.value)}
+                      onChange={(e) =>
+                        handleSettingChange("defaultPortRange", e.target.value)
+                      }
                       className="mt-1"
                       placeholder="1-1000"
                     />
                   </div>
-                  
+
                   <div>
-                    <Label htmlFor="request-timeout">Request Timeout (seconds)</Label>
+                    <Label htmlFor="request-timeout">
+                      Request Timeout (seconds)
+                    </Label>
                     <Input
                       id="request-timeout"
                       type="number"
                       value={settings.requestTimeout}
-                      onChange={(e) => handleSettingChange('requestTimeout', e.target.value)}
+                      onChange={(e) =>
+                        handleSettingChange("requestTimeout", e.target.value)
+                      }
                       className="mt-1"
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <Label htmlFor="user-agent">User Agent String</Label>
                   <Input
                     id="user-agent"
                     value={settings.userAgent}
-                    onChange={(e) => handleSettingChange('userAgent', e.target.value)}
+                    onChange={(e) =>
+                      handleSettingChange("userAgent", e.target.value)
+                    }
                     className="mt-1"
                   />
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label htmlFor="ssl-verification">Enable SSL Certificate Verification</Label>
-                    <p className="text-sm text-gray-600">Verify SSL certificates during scans</p>
+                    <Label htmlFor="ssl-verification">
+                      Enable SSL Certificate Verification
+                    </Label>
+                    <p className="text-sm text-gray-600">
+                      Verify SSL certificates during scans
+                    </p>
                   </div>
                   <Switch
                     id="ssl-verification"
                     checked={settings.enableSSLVerification}
-                    onCheckedChange={(checked) => handleSettingChange('enableSSLVerification', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("enableSSLVerification", checked)
+                    }
                   />
                 </div>
               </CardContent>
@@ -278,54 +340,73 @@ export default function SettingsPage() {
                   <span>Notification Settings</span>
                 </CardTitle>
                 <CardDescription>
-                  Configure how and when you receive notifications about scan results
+                  Configure how and when you receive notifications about scan
+                  results
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label htmlFor="email-notifications">Email Notifications</Label>
-                    <p className="text-sm text-gray-600">Receive scan results via email</p>
+                    <Label htmlFor="email-notifications">
+                      Email Notifications
+                    </Label>
+                    <p className="text-sm text-gray-600">
+                      Receive scan results via email
+                    </p>
                   </div>
                   <Switch
                     id="email-notifications"
                     checked={settings.emailNotifications}
-                    onCheckedChange={(checked) => handleSettingChange('emailNotifications', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("emailNotifications", checked)
+                    }
                   />
                 </div>
-                
+
                 {settings.emailNotifications && (
                   <div>
-                    <Label htmlFor="notification-email">Notification Email</Label>
+                    <Label htmlFor="notification-email">
+                      Notification Email
+                    </Label>
                     <Input
                       id="notification-email"
                       type="email"
                       value={settings.notificationEmail}
-                      onChange={(e) => handleSettingChange('notificationEmail', e.target.value)}
+                      onChange={(e) =>
+                        handleSettingChange("notificationEmail", e.target.value)
+                      }
                       className="mt-1"
                     />
                   </div>
                 )}
-                
+
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label htmlFor="slack-notifications">Slack Notifications</Label>
-                    <p className="text-sm text-gray-600">Send notifications to Slack channel</p>
+                    <Label htmlFor="slack-notifications">
+                      Slack Notifications
+                    </Label>
+                    <p className="text-sm text-gray-600">
+                      Send notifications to Slack channel
+                    </p>
                   </div>
                   <Switch
                     id="slack-notifications"
                     checked={settings.slackNotifications}
-                    onCheckedChange={(checked) => handleSettingChange('slackNotifications', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSettingChange("slackNotifications", checked)
+                    }
                   />
                 </div>
-                
+
                 {settings.slackNotifications && (
                   <div>
                     <Label htmlFor="webhook-url">Slack Webhook URL</Label>
                     <Input
                       id="webhook-url"
                       value={settings.webhookUrl}
-                      onChange={(e) => handleSettingChange('webhookUrl', e.target.value)}
+                      onChange={(e) =>
+                        handleSettingChange("webhookUrl", e.target.value)
+                      }
                       className="mt-1"
                       placeholder="https://hooks.slack.com/services/..."
                     />
@@ -343,7 +424,8 @@ export default function SettingsPage() {
                   <span>External Integrations</span>
                 </CardTitle>
                 <CardDescription>
-                  Configure integrations with external security tools and services
+                  Configure integrations with external security tools and
+                  services
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -353,36 +435,44 @@ export default function SettingsPage() {
                     id="owasp-zap-key"
                     type="password"
                     value={settings.owaspZapApiKey}
-                    onChange={(e) => handleSettingChange('owaspZapApiKey', e.target.value)}
+                    onChange={(e) =>
+                      handleSettingChange("owaspZapApiKey", e.target.value)
+                    }
                     className="mt-1"
                     placeholder="Enter OWASP ZAP API key"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="burp-suite-url">Burp Suite API URL</Label>
                   <Input
                     id="burp-suite-url"
                     value={settings.burpSuiteApiUrl}
-                    onChange={(e) => handleSettingChange('burpSuiteApiUrl', e.target.value)}
+                    onChange={(e) =>
+                      handleSettingChange("burpSuiteApiUrl", e.target.value)
+                    }
                     className="mt-1"
                     placeholder="http://localhost:1337"
                   />
                 </div>
-                
+
                 <div className="border-t pt-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <Label htmlFor="jira-integration">JIRA Integration</Label>
-                      <p className="text-sm text-gray-600">Automatically create tickets for vulnerabilities</p>
+                      <p className="text-sm text-gray-600">
+                        Automatically create tickets for vulnerabilities
+                      </p>
                     </div>
                     <Switch
                       id="jira-integration"
                       checked={settings.jiraIntegration}
-                      onCheckedChange={(checked) => handleSettingChange('jiraIntegration', checked)}
+                      onCheckedChange={(checked) =>
+                        handleSettingChange("jiraIntegration", checked)
+                      }
                     />
                   </div>
-                  
+
                   {settings.jiraIntegration && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
@@ -390,19 +480,23 @@ export default function SettingsPage() {
                         <Input
                           id="jira-url"
                           value={settings.jiraUrl}
-                          onChange={(e) => handleSettingChange('jiraUrl', e.target.value)}
+                          onChange={(e) =>
+                            handleSettingChange("jiraUrl", e.target.value)
+                          }
                           className="mt-1"
                           placeholder="https://company.atlassian.net"
                         />
                       </div>
-                      
+
                       <div>
                         <Label htmlFor="jira-api-key">JIRA API Key</Label>
                         <Input
                           id="jira-api-key"
                           type="password"
                           value={settings.jiraApiKey}
-                          onChange={(e) => handleSettingChange('jiraApiKey', e.target.value)}
+                          onChange={(e) =>
+                            handleSettingChange("jiraApiKey", e.target.value)
+                          }
                           className="mt-1"
                           placeholder="Enter JIRA API key"
                         />
@@ -410,12 +504,13 @@ export default function SettingsPage() {
                     </div>
                   )}
                 </div>
-                
+
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    API keys and sensitive information are encrypted and stored securely. 
-                    Test your integrations after configuration to ensure they work correctly.
+                    API keys and sensitive information are encrypted and stored
+                    securely. Test your integrations after configuration to
+                    ensure they work correctly.
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -424,5 +519,5 @@ export default function SettingsPage() {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }
